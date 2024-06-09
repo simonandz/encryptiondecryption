@@ -9,23 +9,21 @@
 </head>
 <body>
     <div class="container">
-        <h1>Decrypt Text</h1>
+        <h1>Decrypt Password</h1>
         <div>
-            <textarea id="cipherText" placeholder="Enter text to decrypt"></textarea>
-            <input type="password" id="decryptionKey" placeholder="Enter decryption key">
+            <textarea id="cipherText" placeholder="enter password to decrypt"></textarea>
+            <input type="password" id="decryptionKey" placeholder="enter decryption key">
             <button onclick="decryptText()">Decrypt</button>
-            <textarea id="decryptedText" placeholder="Decrypted text will appear here" readonly></textarea>
+            <textarea id="decryptedText" placeholder="decrypted text will appear here" readonly></textarea>
         </div>
         <nav>
             <a href="index.html">Home</a>
-            <a href="encrypt.html">Encrypt Text</a>
+            <a href="encrypt.html">Encrypt Password</a>
         </nav>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
-        const iv = CryptoJS.enc.Hex.parse('abcdef9876543210abcdef9876543210'); // Replace with your IV
-
         function decryptText() {
             const cipherText = document.getElementById('cipherText').value;
             const decryptionKey = document.getElementById('decryptionKey').value;
@@ -34,8 +32,12 @@
                 return;
             }
             const key = CryptoJS.enc.Hex.parse(CryptoJS.SHA256(decryptionKey).toString()); // Derive key from password
+
+            const iv = CryptoJS.enc.Hex.parse(cipherText.substr(0, 32)); // Extract IV from the beginning of the cipherText
+            const encrypted = cipherText.substring(32); // Extract the encrypted text
+
             try {
-                const decrypted = CryptoJS.AES.decrypt(cipherText, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
+                const decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
                 if (!decrypted) {
                     alert("Invalid key or corrupted data.");
                 } else {

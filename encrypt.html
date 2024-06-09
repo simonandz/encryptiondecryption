@@ -9,23 +9,21 @@
 </head>
 <body>
     <div class="container">
-        <h1>Encrypt Text</h1>
+        <h1>Encrypt Password</h1>
         <div>
-            <textarea id="plainText" placeholder="Enter text to encrypt"></textarea>
-            <input type="password" id="encryptionKey" placeholder="Enter encryption key">
+            <textarea id="plainText" placeholder="enter password to encrypt"></textarea>
+            <input type="password" id="encryptionKey" placeholder="choose encryption key">
             <button onclick="encryptText()">Encrypt</button>
-            <textarea id="encryptedText" placeholder="Encrypted text will appear here" readonly></textarea>
+            <textarea id="encryptedText" placeholder="encrypted text will appear here" readonly></textarea>
         </div>
         <nav>
             <a href="index.html">Home</a>
-            <a href="decrypt.html">Decrypt Text</a>
+            <a href="decrypt.html">Decrypt Password</a>
         </nav>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
-        const iv = CryptoJS.enc.Hex.parse('abcdef9876543210abcdef9876543210'); // Replace with your IV
-
         function encryptText() {
             const plainText = document.getElementById('plainText').value;
             const encryptionKey = document.getElementById('encryptionKey').value;
@@ -34,8 +32,10 @@
                 return;
             }
             const key = CryptoJS.enc.Hex.parse(CryptoJS.SHA256(encryptionKey).toString()); // Derive key from password
+            const iv = CryptoJS.lib.WordArray.random(16); // Generate random IV
             const encrypted = CryptoJS.AES.encrypt(plainText, key, { iv: iv }).toString();
-            document.getElementById('encryptedText').value = encrypted;
+            const encryptedData = iv.toString() + encrypted; // Prepend IV to the ciphertext
+            document.getElementById('encryptedText').value = encryptedData;
         }
     </script>
 </body>
